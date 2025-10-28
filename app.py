@@ -39,7 +39,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ClickUp API Configuration
-CLICKUP_API_TOKEN = "88049748_252aea582407f70da5caa635d8f7f39dd2d0d4c87a4337afc58ee11bdfb74fd6"
+CLICKUP_API_TOKEN = "88049748_252aea582407f70da5caa635d8f7f39dd2d0d4c87a4337a"
 HEADERS = {
     "Authorization": CLICKUP_API_TOKEN
 }
@@ -169,13 +169,26 @@ def get_priority_display(priority):
     if priority is None:
         return "⚪ None"
     
+    # Handle if priority is a dict (get the 'priority' key or 'id' key)
+    if isinstance(priority, dict):
+        priority = priority.get('priority') or priority.get('id')
+    
+    # If still None or not a number, return None
+    if priority is None:
+        return "⚪ None"
+    
     priority_map = {
         1: "🔴 Urgent",
         2: "🟠 High", 
         3: "🟡 Normal",
         4: "🔵 Low"
     }
-    return priority_map.get(int(priority), "⚪ None")
+    
+    try:
+        priority_num = int(priority)
+        return priority_map.get(priority_num, "⚪ None")
+    except (ValueError, TypeError):
+        return "⚪ None"
 
 def display_task_card(task, show_details=True):
     """Display a task card with details"""
@@ -422,6 +435,11 @@ elif view_mode == "Analytics":
             priority_count = defaultdict(int)
             for task in tasks:
                 priority = task.get("priority")
+                
+                # Handle priority being a dict
+                if isinstance(priority, dict):
+                    priority = priority.get('priority') or priority.get('id')
+                
                 priority_name = {
                     1: "Urgent",
                     2: "High",
