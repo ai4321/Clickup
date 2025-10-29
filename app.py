@@ -4,6 +4,7 @@ from datetime import datetime, timedelta
 from collections import defaultdict
 import pandas as pd
 import json
+import os
 
 # Page configuration
 st.set_page_config(
@@ -53,7 +54,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ClickUp API Configuration
-CLICKUP_API_TOKEN = "88049748_252aea582407f70da5caa635d8f7f39dd2d0d4c87a4337afc58ee11bdfb74fd6"
+CLICKUP_API_TOKEN =os.getenv("CLICKUP_API_TOKEN")
 HEADERS = {
     "Authorization": CLICKUP_API_TOKEN
 }
